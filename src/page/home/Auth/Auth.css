@@ -1,0 +1,19 @@
+/* Apply background image */
+.authContainer {
+    background-image: url("/bg1.jpg"); /* ✅ Ensure bg.jpg is in public folder */
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+/* body {
+    background-color: #1a1a1a; /* Dark Grey */
+    /* color: white; Ensures text is visible */
+  /* } */ */
+  
+
+/* Blur effect */
+.bgBlure {
+    backdrop-filter: blur(10px);
+}
