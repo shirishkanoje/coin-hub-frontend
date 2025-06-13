@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const API_BASE_URL = "https://mysql-javaversion.up.railway.app/"
+export const API_BASE_URL = "http://localhost:5454"
 
 
 const api=axios.create({
