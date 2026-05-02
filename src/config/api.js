@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const API_BASE_URL = "https://coin-hub-backend-production.up.railway.app"
+export const API_BASE_URL = "https://coin-hub-backend.onrender.com"
 
 
 const api=axios.create({
