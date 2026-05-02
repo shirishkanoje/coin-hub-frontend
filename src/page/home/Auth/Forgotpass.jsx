@@ -1,71 +1,121 @@
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { DialogClose } from "@/components/ui/dialog";
 
-// Define validation schema
-const formSchema = z.object({
-  accountHolderName: z.string().min(3, "Name must be at least 3 characters"),
-  ifsc: z.string().min(5, "IFSC must be valid"),
-  accountNumber: z.string().min(10, "Account number must be valid"),
-  bankName: z.string().min(3, "Bank name must be at least 3 characters"),
-});
+const baseUrl = "https://coin-hub-backend.onrender.com";
 
 const Forgotpass = () => {
-  const form = useForm({
-    resolver: zodResolver(formSchema), // Use zod for validation
-    defaultValues: {
-     
-      Email: "",
-    
-      
-    },
-  });
+  const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const [step, setStep] = useState(1); // 1=email, 2=otp, 3=password
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [password, setPassword] = useState("");
+  const [session, setSession] = useState("");
+
+  // 🔹 STEP 1: SEND OTP
+  const sendOtp = async () => {
+    try {
+      const res = await axios.post(
+        `${baseUrl}/auth/users/reset-password/send-otp`,
+        {
+          sendTo: email,
+          verificationType: "EMAIL",
+        }
+      );
+
+      setSession(res.data.session);
+      setStep(2);
+
+      alert("OTP sent to your email");
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send OTP");
+    }
+  };
+
+  // 🔹 STEP 2 → STEP 3
+  const verifyOtp = () => {
+    if (!otp) {
+      alert("Enter OTP first");
+      return;
+    }
+    setStep(3);
+  };
+
+  // 🔹 STEP 3: RESET PASSWORD
+  const resetPassword = async () => {
+    try {
+      await axios.post(
+        `${baseUrl}/auth/users/reset-password/verify-otp?id=${session}`,
+        {
+          otp,
+          password,
+        }
+      );
+
+      alert("Password updated successfully");
+
+      // ✅ Redirect to login page
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+
+    } catch (err) {
+      console.error(err);
+      alert("Invalid OTP or error");
+    }
   };
 
   return (
-    <div >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        
-         
+    <div className="space-y-4">
 
-          {/* IFSC Code */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                
-                <FormControl>
-                  <Input className="border w-full border-gray-700 p-3" placeholder="Enter your email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+      {/* STEP 1: EMAIL */}
+      {step === 1 && (
+        <>
+          <Input
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-
-        
-
-        
-
-          {/* Submit Button */}
-          
-
-          <Button type="submit" className="w-full py-4">
-            Submit
+          <Button onClick={sendOtp} className="w-full">
+            Send OTP
           </Button>
-        
-          
-        </form>
-      </Form>
+        </>
+      )}
+
+      {/* STEP 2: OTP */}
+      {step === 2 && (
+        <>
+          <Input
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+          <Button onClick={verifyOtp} className="w-full">
+            Verify OTP
+          </Button>
+        </>
+      )}
+
+      {/* STEP 3: NEW PASSWORD */}
+      {step === 3 && (
+        <>
+          <Input
+            placeholder="Enter new password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button onClick={resetPassword} className="w-full">
+            Reset Password
+          </Button>
+        </>
+      )}
+
     </div>
   );
 };
