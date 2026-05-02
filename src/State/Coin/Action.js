@@ -24,7 +24,7 @@ import api, { API_BASE_URL } from "@/config/api";
 export const getCoinList = (page) => async (dispatch) => {
     dispatch({ type: FETCH_COIN_LIST_REQUEST });
 
-    const baseUrl = "https://coin-hub-backend-production.up.railway.app";
+    const baseUrl = "https://coin-hub-backend.onrender.com";
 
     try {
         const { data } = await axios.get(`${baseUrl}/api/coins/list?page=${page}`);
