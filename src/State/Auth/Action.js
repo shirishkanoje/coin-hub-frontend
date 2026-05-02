@@ -12,7 +12,7 @@ import {
   REGISTER_SUCCESS,
 } from "./ActionTypes";
 
-const baseUrl = "https://coin-hub-backend-production.up.railway.app";
+const baseUrl = "https://coin-hub-backend.onrender.com";
 
 // ✅ REGISTER USER
 export const register = (userData, navigate) => async (dispatch) => {
