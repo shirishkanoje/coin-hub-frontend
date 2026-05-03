@@ -253,7 +253,7 @@ const Navbar = () => {
     if (!query.trim()) return;
 
     try {
-      const res = await axios.get(`http://localhost:5454/api/coins/details/${query.toLowerCase()}`);
+      const res = await axios.get(`https://coin-hub-backend.onrender.com/api/coins/details/${query.toLowerCase()}`);
       const coin = res.data;
 
       setResults([{
@@ -285,7 +285,7 @@ const Navbar = () => {
   useEffect(() => {
     const loadDefaultBitcoin = async () => {
       try {
-        const res = await axios.get(`http://localhost:5454/api/coins/details/bitcoin`);
+        const res = await axios.get(`https://coin-hub-backend.onrender.com/api/coins/details/bitcoin`);
         const btc = res.data;
 
         const defaultCoin = {
